@@ -15,7 +15,7 @@ namespace CorityAssignment
         private int n; //number of participants in each camping trip
         private int p; //number of receipts/charges for each participant
 
-        private void getInput()
+        private void readInputWriteOutput()
         {
             TextReader tr = File.OpenText(path);
             n = int.Parse(tr.ReadLine()); //read the value for number of participants in each camping trip
@@ -65,7 +65,7 @@ namespace CorityAssignment
         public static void Main(string[] args)
         {
             Program ob = new Program();
-            ob.getInput();
+            ob.readInputWriteOutput();
 
         }//end of main method
     }//end of Program class
