@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,65 +11,55 @@ namespace CorityAssignment
     class Program
     {
 
-        String path = "C:\\Users\\Owner\\Documents\\Visual Studio 2015\\Projects\\CorityAssignment\\expenses.txt";
-        private int n; //number of participants in the camping trip
+        private static String  path = "C:\\Users\\Owner\\Documents\\Visual Studio 2015\\Projects\\CorityAssignment\\expenses.txt";
+        private int n; //number of participants in each camping trip
         private int p; //number of receipts/charges for each participant
 
         private void getInput()
         {
-            double equalShare = calcEqualShare();
             TextReader tr = File.OpenText(path);
-            n = int.Parse(tr.ReadLine()); //read first line from input file
+            n = int.Parse(tr.ReadLine()); //read the value for number of participants in each camping trip
+            
             while (n != 0)
             {
-                
+                ArrayList arr = new ArrayList(); //use collection to store the sum of charges for each participant
                 for (int i = 0; i < n; i++)
-                {
+                { 
                     double sum = 0.0;
-                    p = int.Parse(tr.ReadLine()); //read second line from input file
+                    p = int.Parse(tr.ReadLine()); //read the value for number of charges spent by each participant
 
                     for (int j = 0; j < p; j++)
                     {
                         double y = double.Parse(tr.ReadLine());
-                        sum = sum + y;
-                    }
-                    if (sum > equalShare)
-                    {
-                        File.AppendAllText(path + ".out", Environment.NewLine + "($" + Math.Round((sum - equalShare), 2) + ")");
-                    }
+                        sum = sum + y; //sum of charges
+                    }//end of for j loop
+                    
+                    arr.Add(sum); //add the sum of charges to the arrayList
+                }//end of for i loop
+
+                double total = 0.0; //total of charges by all participants
+
+                foreach(double value in arr)
+                {
+                    total = total + value;
+                }
+
+                double equalShare = total / n; //equal share of money
+
+                foreach(double value in arr)
+                {
+                    if(value > equalShare)
+                        File.AppendAllText(path + ".out", "($" + Math.Round((value - equalShare), 2) + ")" + Environment.NewLine);
                     else
-                    {
-                        File.AppendAllText(path + ".out", Environment.NewLine + "$" + Math.Round((equalShare - sum), 2));
-                    }
-
+                        File.AppendAllText(path + ".out", "$" + Math.Round((equalShare - value), 2) + Environment.NewLine);
                 }
 
-                n = int.Parse(tr.ReadLine());
-            }
-        }
+                File.AppendAllText(path + ".out", Environment.NewLine);//insert blank line after end of each camping trip
+                n = int.Parse(tr.ReadLine()); //read the value for number of participants in next camping trip
 
-        private double calcEqualShare()
-        {
-            TextReader tr = File.OpenText(path);
-            n = int.Parse(tr.ReadLine()); //read first line from input file
-            
-            double sum = 0.0;
-            if (n != 0)
-            {
-                for (int i = 0; i < n; i++)
-                {  
-                    p = int.Parse(tr.ReadLine()); //read second line from input file
-                    for (int j = 0; j < p; j++)
-                    {
-                        double y = double.Parse(tr.ReadLine());
-                        sum = sum + y;
-                    }
-                }
-
-            }
+            }//end of while loop
             tr.Close();
-            return sum / 3;
-        }
+        }//end of getInput() method
          
 
         public static void Main(string[] args)
@@ -76,6 +67,6 @@ namespace CorityAssignment
             Program ob = new Program();
             ob.getInput();
 
-        }
-    }
-}
+        }//end of main method
+    }//end of Program class
+}//end of namespace
